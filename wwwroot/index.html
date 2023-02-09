@@ -1,0 +1,288 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@2.45.0/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://kit.fontawesome.com/3e8da217f3.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="flex items-center flex-row">
+      <div
+        class="relative flex flex-col items-center justify-center w-3/4 h-screen bg-black space-y-7 pt-5"
+      >
+        <p class="absolute top-7 left-5 text-xl">
+          <a
+            href="http://localhost:3000/"
+            class="inline-flex justify-center items-center p-2 px-4 py-2.5 space-x-1.5 text-base font-medium rounded-lg text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white"
+          >
+            <i class="fa-solid fa-house fa-lg"></i>
+            <span class="w-full text-xl">TOP</span>
+          </a>
+        </p>
+        <!-- howToModal出すボタン -->
+
+        <label
+          for="my-modal4"
+          class="btn no-animation absolute top-0 left-32 inline-flex justify-center items-center text-lg font-medium rounded-lg text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white"
+          >How To Use!</label
+        >
+
+        <div class="w-full h-2/3 pointer-events-none pt-3" id="player"></div>
+        <div class="flex justify-center flex-row w-full">
+          <div class="flex flex-row text-white pr-1 space-x-1">
+            <div class="w-13">
+              <span class="w-full" id="currentVideoTime">0:00</span>
+            </div>
+            <span>/</span>
+            <div class="w-12">
+              <span class="w-full" id="videoTime">0:00</span>
+            </div>
+          </div>
+          <input
+            id="playTimeRange"
+            type="range"
+            min="0"
+            max="100"
+            value="0"
+            class="range w-2/3"
+          />
+        </div>
+        <div class="flex flex-row items-center justify-center space-x-5">
+          <div
+            id="navBar"
+            class="flex flex-row items-center justify-center space-x-5"
+          >
+            <i
+              id="prev"
+              class="fa-2x fa-solid fa-backward text-white cursor-pointer"
+            ></i>
+            <i
+              id="stopMovie"
+              class="fa-2x fa-solid fa-stop text-white cursor-pointer"
+            ></i>
+            <i
+              id="playMovie"
+              class="w-5 fa-2x fa-solid fa-play text-white cursor-pointer"
+            ></i>
+            <i
+              id="pauseMovie"
+              class="hidden w-5 fa-2x fa-solid fa-pause text-white cursor-pointer"
+            ></i>
+            <i
+              id="next"
+              class="fa-2x fa-solid fa-forward text-white cursor-pointer"
+            ></i>
+            <input
+              id="videoIdParams"
+              class="p-1 py-1.5"
+              type="text"
+              placeholder="YouTubeURLを入力"
+              onkeypress="sendVideoId(event.keyCode);"
+            />
+            <button
+              type="button"
+              id="videoIdParamsBtn"
+              class="bg-white w-16 py-2 px-4 inline-flex justify-center items-center gap-2 rounded-md border-2 border-gray-900 font-semibold text-gray-800 hover:bg-gray-300 hover:border-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2 transition-all text-sm"
+            >
+              送信
+            </button>
+          </div>
+          <input
+            id="volumeRange"
+            type="range"
+            min="0"
+            max="100"
+            value="40"
+            class="range bg-white"
+          />
+          <i
+            id="volumeOn"
+            class="w-5 fa-2x fa-solid fa-solid fa-volume-high text-white cursor-pointer"
+          ></i>
+          <i
+            id="mute"
+            class="hidden fa-2x fa-solid fa-volume-xmark text-white cursor-pointer"
+          ></i>
+        </div>
+
+        <!-- <button
+          class="btn btn-outline btn-success no-animation"
+          id="startAndStop"
+          type="button"
+        >
+          準備完了
+        </button> -->
+        <label for="my-modal" class="hidden btn">open modal</label>
+        <!-- Put this part before </body> tag -->
+        <input type="checkbox" id="my-modal" class="modal-toggle" />
+        <div class="hidden modal" id="readyModal">
+          <div class="flex flex-col items-center justify-center modal-box">
+            <h3 class="font-bold text-lg">
+              準備完了を押すことで共有が開始されます。
+            </h3>
+            <div class="modal-action">
+              <label
+                for="my-modal"
+                id="startAndStop"
+                class="btn btn-outline btn-success no-animation"
+                >準備完了</label
+              >
+            </div>
+          </div>
+        </div>
+        <!-- URL共有モーダル -->
+        <label for="my-modal3" class="btn no-animation" id="createShareUrl"
+          >共有URL発行</label
+        >
+        <input type="checkbox" id="my-modal3" class="modal-toggle" />
+        <div class="modal">
+          <div class="modal-box max-w-lg relative">
+            <div
+              id="copyTooltip"
+              class="tooltip tooltip-left absolute top-3 right-5"
+              data-tip="click Copy link!"
+            >
+              <i
+                id="copyIcon"
+                class="text-gray-500 active:text-blue-400 fa-regular fa-copy transition hover:text-gray-200 hover: hover:rotate-[-5deg] hover:stroke-slate-800"
+              ></i>
+            </div>
+            <p class="text-white">
+              <span id="shareUrl" class="text-white"></span>
+            </p>
+            <div class="modal-action">
+              <label for="my-modal3" class="btn no-animation" id="closeModalBtn"
+                >閉じる</label
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- How To Useモーダル -->
+        <input type="checkbox" id="my-modal4" class="modal-toggle" />
+        <div id="howToModal" class="modal">
+          <div class="modal-box w-5/12 max-w-5xl">
+            <h3 class="font-bold text-lg">How To Use!</h3>
+            <p class="py-4">
+              TOPページ下部にあるYouTubeURL入力フォームにURLを入力しましょう！
+              YouTubeURLを入力した後に、共有URL発行ボタンが現れます。<br />
+              発行されたURLを一緒に見たい人たちに共有し、動画を同時視聴しましょう
+              <br /><br />
+              尚、動画の再生や停止などの操作は共有URLを発行した人のみに限られます。
+            </p>
+            <div class="form-control w-full max-w-xs pt-3">
+              <label class="label">
+                <span class="label-text">名前の登録または変更</span>
+              </label>
+              <input
+                type="text"
+                id="nameInput"
+                placeholder="名前を入力"
+                class="input input-bordered w-full max-w-xs"
+              />
+              <label class="label">
+                <span class="label-text-alt"
+                  >コメントを送る際に登録された名前が表示されます</span
+                >
+              </label>
+            </div>
+            <div class="modal-action">
+              <label for="my-modal4" class="btn" id="submitNameBtn">OK</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="relative flex flex-col items-center justify-center w-1/3 min-h-screen bg-gray-700 text-gray-800"
+      >
+        <div
+          class="flex flex-col flex-grow w-full max-w-xl bg-gray-700 shadow-xl rounded-lg overflow-hidden"
+        >
+          <div class="flex flex-col flex-grow h-0 p-4 overflow-auto" id="chat">
+            <div class="flex w-full mt-2 space-x-3 max-w-xs">
+              <ul class="space-y-4 text-gray-100" id="messageList" />
+            </div>
+          </div>
+          <div class="flex flex-row">
+            <div class="bg-gray-300 p-2 w-5/6">
+              <input
+                class="bg-white flex items-center h-12 w-full rounded px-3 text-sm"
+                id="inputText"
+                type="text"
+                placeholder="コメントを入力…"
+                onkeypress="sendMessageByEnterKey(event.keyCode);"
+              />
+            </div>
+            <div
+              class="p-4 flex items-center justify-center flex-grow bg-gray-200 cursor-pointer"
+              id="sendButton"
+            >
+              <i class="fa-2x fa-solid fa-paper-plane"></i>
+            </div>
+          </div>
+        </div>
+        <div class="absolute top-0 right-0 w-1/3">
+          <div class="room">
+            <div>
+              <div class="flex flex-col justify-between">
+                <button
+                  class="btn btn-success text-xs no-animation rounded-sm"
+                  id="js-join-trigger"
+                >
+                  ビデオ通話に参加
+                </button>
+                <button
+                  class="hidden btn btn-warning text-xs no-animation rounded-sm"
+                  id="js-leave-trigger"
+                >
+                  ビデオ通話から退出
+                </button>
+              </div>
+              <video
+                style="transform: scale(-1, 1)"
+                id="js-local-stream"
+              ></video>
+              <div class="flex flex-row pt-1 pb-3">
+                <i
+                  id="offVideo"
+                  class="w-12 fa-2x fa-solid fa-video text-white cursor-pointer"
+                ></i>
+                <i
+                  id="onVideo"
+                  class="hidden fa-2x fa-solid fa-video-slash text-white cursor-pointer"
+                ></i
+                ><i
+                  id="mikeOn"
+                  class="hidden fa-2x fa-solid fa-microphone-slash text-white cursor-pointer"
+                ></i>
+                <i
+                  id="mikeOff"
+                  class="w-12 fa-2x fa-solid fa-microphone text-white cursor-pointer"
+                ></i>
+              </div>
+            </div>
+            <div class="remote-streams" id="js-remote-streams"></div>
+            <pre class="messages" id="js-messages"></pre>
+          </div>
+          <p class="meta" id="js-meta"></p>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="./socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="//cdn.webrtc.ecl.ntt.com/skyway-4.4.5.js"></script>
+  <script src="./util.js"></script>
+  <script src="./main.js"></script>
+  <script src="./script.js"></script>
+</html>
